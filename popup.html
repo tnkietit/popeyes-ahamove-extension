@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Popeyes → Ahamove</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 300px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #e8401c, #ff6b35);
+      color: white;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .header p {
+      font-size: 11px;
+      opacity: 0.85;
+      margin-top: 4px;
+    }
+
+    .content {
+      padding: 16px;
+    }
+
+    .order-info {
+      background: white;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display: none;
+    }
+
+    .order-info.visible {
+      display: block;
+    }
+
+    .order-info h3 {
+      font-size: 12px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+
+    .info-label {
+      font-size: 12px;
+      color: #666;
+      min-width: 90px;
+      flex-shrink: 0;
+    }
+
+    .info-value {
+      font-size: 12px;
+      color: #222;
+      font-weight: 600;
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .info-value.price {
+      color: #e8401c;
+    }
+
+    .field-row {
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .field-display {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      padding-right: 28px;
+    }
+
+    .field-label {
+      font-size: 11px;
+      color: #999;
+      flex-shrink: 0;
+    }
+
+    .field-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: #222;
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .field-value.price {
+      color: #e8401c;
+    }
+
+    .edit-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 0;
+      opacity: 0.3;
+      transition: opacity 0.15s;
+      line-height: 1;
+    }
+
+    .field-row:hover .edit-btn {
+      opacity: 1;
+    }
+
+    .field-edit {
+      width: 100%;
+      margin-top: 5px;
+      padding: 6px 8px;
+      border: 1.5px solid #e8401c;
+      border-radius: 7px;
+      font-size: 12px;
+      font-family: inherit;
+      background: #fff5f3;
+      outline: none;
+      resize: none;
+      box-sizing: border-box;
+    }
+
+    .field-row + .field-row {
+      border-top: 1px solid #f0f0f0;
+      padding-top: 8px;
+    }
+
+    .divider {
+      height: 1px;
+      background: #eee;
+      margin: 10px 0;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .payment-options {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .payment-btn {
+      flex: 1;
+      padding: 12px 8px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      background: white;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .payment-btn:hover {
+      border-color: #e8401c;
+    }
+
+    .payment-btn.selected {
+      border-color: #e8401c;
+      background: #fff5f3;
+    }
+
+    .payment-btn .icon {
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .payment-btn .label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .payment-btn .sublabel {
+      font-size: 10px;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    .payment-btn.selected .label {
+      color: #e8401c;
+    }
+
+    .action-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #e8401c, #ff6b35);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .action-btn:hover {
+      opacity: 0.9;
+    }
+
+    .action-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      opacity: 1;
+    }
+
+    .scan-btn {
+      width: 100%;
+      padding: 12px;
+      background: white;
+      color: #e8401c;
+      border: 2px solid #e8401c;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      margin-bottom: 14px;
+    }
+
+    .scan-btn:hover {
+      background: #fff5f3;
+    }
+
+    .status {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    .status.error {
+      background: #ffeef0;
+      color: #c0392b;
+      border: 1px solid #f5c6cb;
+      display: block;
+    }
+
+    .status.success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
+      display: block;
+    }
+
+    .status.info {
+      background: #e3f2fd;
+      color: #1565c0;
+      border: 1px solid #bbdefb;
+      display: block;
+    }
+
+    .not-on-popeyes {
+      text-align: center;
+      padding: 20px;
+      color: #888;
+      font-size: 12px;
+    }
+
+    .not-on-popeyes .big-icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    .steps {
+      background: white;
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: #555;
+    }
+
+    .step:last-child {
+      margin-bottom: 0;
+    }
+
+    .step-num {
+      background: #e8401c;
+      color: white;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step.done .step-num {
+      background: #4caf50;
+    }
+
+    .step-text {
+      padding-top: 2px;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🍗 Popeyes → Ahamove</h1>
+    <p>Tự động đặt vận chuyển</p>
+  </div>
+
+  <div class="content">
+    <div id="not-on-popeyes" class="not-on-popeyes" style="display:none;">
+      <div class="big-icon">⚠️</div>
+      <strong>Vui lòng mở trang Popeyes</strong>
+      <p style="margin-top:6px;">Truy cập <a href="https://popeyes.beeiq.co/" target="_blank" style="color:#e8401c;">popeyes.beeiq.co</a> và mở đơn hàng cần giao</p>
+    </div>
+
+    <div id="main-content">
+      <div id="status-msg" class="status"></div>
+
+      <button class="scan-btn" id="scan-btn">🔍 Đọc thông tin đơn hàng</button>
+
+      <div id="order-info" class="order-info">
+        <h3>Thông tin đơn hàng</h3>
+
+        <div class="field-row" id="field-name">
+          <div class="field-display">
+            <div class="field-label">👤 Người nhận</div>
+            <div class="field-value" id="disp-name">—</div>
+          </div>
+          <button class="edit-btn" data-field="name">✏️</button>
+          <input class="field-edit" id="edit-name" type="text" style="display:none" data-sync="name">
+        </div>
+
+        <div class="field-row" id="field-phone">
+          <div class="field-display">
+            <div class="field-label">📞 Số điện thoại</div>
+            <div class="field-value" id="disp-phone">—</div>
+          </div>
+          <button class="edit-btn" data-field="phone">✏️</button>
+          <input class="field-edit" id="edit-phone" type="text" style="display:none" data-sync="phone">
+        </div>
+
+        <div class="field-row" id="field-address">
+          <div class="field-display">
+            <div class="field-label">📍 Địa chỉ</div>
+            <div class="field-value" id="disp-address">—</div>
+          </div>
+          <button class="edit-btn" data-field="address">✏️</button>
+          <textarea class="field-edit" id="edit-address" rows="2" style="display:none" data-sync="address"></textarea>
+        </div>
+
+        <div class="field-row" id="field-price">
+          <div class="field-display">
+            <div class="field-label">💰 Trị giá</div>
+            <div class="field-value price" id="disp-price">—</div>
+          </div>
+          <button class="edit-btn" data-field="price">✏️</button>
+          <input class="field-edit" id="edit-price" type="number" style="display:none" data-sync="price">
+        </div>
+      </div>
+
+      <div id="payment-section" style="display:none;">
+        <div class="section-title">Chọn trạng thái thanh toán</div>
+        <div class="payment-options">
+          <button class="payment-btn" id="btn-paid">
+            <div class="icon">✅</div>
+            <div class="label">Đã thanh toán</div>
+            <div class="sublabel">COD = 0đ</div>
+          </button>
+          <button class="payment-btn" id="btn-unpaid">
+            <div class="icon">💵</div>
+            <div class="label">Chưa thanh toán</div>
+            <div class="sublabel">COD = trị giá đơn</div>
+          </button>
+        </div>
+
+        <button class="action-btn" id="send-btn" disabled>
+          🚀 Chuyển sang Ahamove
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
