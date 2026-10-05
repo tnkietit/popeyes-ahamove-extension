@@ -2,6 +2,8 @@
 
 > **Chrome Extension Manifest V3** tự động hóa quy trình trích xuất thông tin đơn hàng từ hệ thống quản lý POS Popeyes và tự động điền form tạo đơn vận chuyển trên Ahamove.
 
+![Popeyes to Ahamove Auto Order Preview](preview.jpg)
+
 ---
 
 ## 📌 Bối cảnh & Vấn đề giải quyết
